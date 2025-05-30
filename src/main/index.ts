@@ -15,6 +15,8 @@ function createWindow(): void {
     minWidth: 810,
     show: false,
     resizable: true,
+    frame:false,
+    titleBarStyle: "hidden",
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -42,7 +44,36 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+// Window control IPC handlers
+ipcMain.handle('window-minimize', () => {
+  const focusedWindow = BrowserWindow.getFocusedWindow()
+  if (focusedWindow) {
+    focusedWindow.minimize()
+  }
+})
 
+ipcMain.handle('window-maximize', () => {
+  const focusedWindow = BrowserWindow.getFocusedWindow()
+  if (focusedWindow) {
+    if (focusedWindow.isMaximized()) {
+      focusedWindow.unmaximize()
+    } else {
+      focusedWindow.maximize()
+    }
+  }
+})
+
+ipcMain.handle('window-close', () => {
+  const focusedWindow = BrowserWindow.getFocusedWindow()
+  if (focusedWindow) {
+    focusedWindow.close()
+  }
+})
+
+ipcMain.handle('window-is-maximized', () => {
+  const focusedWindow = BrowserWindow.getFocusedWindow()
+  return focusedWindow ? focusedWindow.isMaximized() : false
+})
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -56,9 +87,6 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
 
