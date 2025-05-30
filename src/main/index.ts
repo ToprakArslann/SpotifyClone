@@ -4,11 +4,15 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
+
+  app.whenReady().then(() => {
+    app.commandLine.appendSwitch('enable-features', 'OverlayScrollbar');
+  });
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
-    minWidth: 1000,
+    minWidth: 810,
     show: false,
     resizable: true,
     autoHideMenuBar: true,
@@ -16,6 +20,8 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
+      experimentalFeatures:true,
+      webSecurity:true
     }
   })
 
