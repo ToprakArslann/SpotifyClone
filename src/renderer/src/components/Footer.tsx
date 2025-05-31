@@ -86,7 +86,7 @@ export default function Footer() {
 
     return (
         <div className="items-center justify-between flex relative w-full h-[78px]">
-            <div className="flex flex-row items-center justify-start flex-1 ml-2 max-w-[410px] min-w-[240px] h-full">
+            <div className="flex flex-row items-center justify-start flex-1 ml-2 w-[30%] min-w-[240px] h-full">
                 <div className="bg-customgray w-14 h-14 ml-2 rounded-md items-center justify-center overflow-hidden flex-shrink-0">
                     <img src={songCover} alt="" className="w-full h-full object-cover"/>
                 </div>
@@ -104,7 +104,7 @@ export default function Footer() {
                     <PlusCircle className="customButton"/>
                 </div>
             </div>
-            <div className="flex items-center justify-center p-2 h-full flex-2 min-w-0">
+            <div className="flex items-center justify-center p-2 h-full w-[40%]">
                 <div className="flex flex-col items-center justify-center flex-1 min-w-0">
                     <div className="flex flex-row items-center justify-center gap-4 mb-1">
                         <button className="flex customButton justify-center items-center" onClick={() => setShuffle(!shuffle)}>
@@ -117,7 +117,7 @@ export default function Footer() {
                         <button className="customButton" onClick={() => {setCurrentTime(0); setPlay(false);}}>
                             <IoIosSkipBackward className="text-2xl"/>
                         </button>
-                        <button className="text-black bg-white rounded-full p-1.5 flex-shrink-0 customButton" onClick={() => {
+                        <button className="text-black bg-white  rounded-full p-1.5 flex-shrink-0 customButton" onClick={() => {
                             if(currentTime === duration){
                                 setCurrentTime(0);
                             }
