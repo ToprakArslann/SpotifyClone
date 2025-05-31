@@ -34,7 +34,7 @@ export default function Header() {
     
     return (
         <>
-            <div className="flex flex-row w-full justify-between items-center h-14 relative pr-1 pt-1 drag-region">
+            <div className="flex flex-row w-full justify-between items-center h-14 relative pr-1 pt-2 drag-region">
                 <div className="flex gap-2 flex-shrink-0 no-drag">
                     <button className="p-4">
                         <IoEllipsisHorizontal className="text-2xl"/>
@@ -66,7 +66,7 @@ export default function Header() {
                     </div>
                 </div>
                 <div className="flex flex-row items-center gap-2 flex-shrink-0">
-                    <div className="flex flex-row gap-5 pr-3 items-center max-[810px]:hidden">
+                    <div className="flex flex-row gap-5 pr-3 items-center max-[811px]:hidden">
                         <button onClick={() => setActive("bell")}  className="customButton  ">
                             <FaRegBell className={`text-xl fill-white ${active === "bell" ? "fill-white" : ""} brightness-75`}/>
                         </button>

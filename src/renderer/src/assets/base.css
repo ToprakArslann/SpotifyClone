@@ -4,6 +4,11 @@
 body {
   color: white;
   overflow: overlay;
+  flex-shrink: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 :root{
@@ -18,7 +23,7 @@ body {
 }
 
 .customButton {
-  @apply hover:scale-110 hover:brightness-110 active:scale-100 active:brightness-75 transition-all duration-200;
+  @apply hover:scale-110 hover:brightness-110 active:scale-100 active:brightness-75 transition-all duration-100 outline-none border-none;
 }
 
 ::-webkit-scrollbar{
@@ -35,6 +40,12 @@ body {
 
 button, input, a {
   -webkit-app-region: no-drag;
+  outline: none;
+  border: none;
 }
-
-
+input, textarea {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}

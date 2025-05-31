@@ -20,7 +20,7 @@ export default function App() {
             <SongInfo />
           </div>
         </div>
-        <div className="h-16 flex-shrink-0">
+        <div className="h-[78px] flex-shrink-0 ">
           <Footer />
         </div>
       </div>
