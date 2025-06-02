@@ -10,9 +10,8 @@ import { CgMiniPlayer } from "react-icons/cg";
 import songCover from "../assets/songCover.png";
 import { format } from "path";
 
-export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNext, onSkipPrevious, onRepeat, handleVolume}) {
-    const [currentTime, setCurrentTime] = useState(17);
-    const [duration,setDuration] = useState(333);
+export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNext, onSkipPrevious, onRepeat, handleVolume, trackDuration, trackPosition, setTrackPosition, handleSeek}) {
+    const [dragValue, setDragValue] = useState(trackPosition);
     const [isDragging, setIsDragging] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [replay, setReplay] = useState(false);
@@ -32,8 +31,8 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
 
 
     const handleTimeChange = (e) => {
-        const newTime = parseInt(e.target.value);
-        setCurrentTime(newTime);
+        setIsDragging(true);
+        setDragValue(Number(e.target.value));
     };
 
     const handleRangeMouseDown = () => {
@@ -42,31 +41,17 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
 
     const handleRangeMouseUp = () => {
         setIsDragging(false);
+        handleSeek(dragValue);
     };
 
     useEffect(() => {
-        if(currentTime === duration && !replay){
-        } else if (currentTime === duration && replay) {
-            setCurrentTime(0);
+        if(trackPosition === trackDuration && !replay){
+        } else if (trackPosition === trackDuration && replay) {
+            setTrackPosition(0);
 
         }
         
-    },[currentTime,duration,replay])
-    useEffect(() => {
-        let interval;
-        if (!isDragging && currentTime < duration) {
-            interval = setInterval(() => {
-                setCurrentTime(prev => {
-                    if (prev >= duration) {
-                        return duration;
-                    }
-                    return prev + 1;
-                });
-            }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [currentTime, duration, isDragging]);
-
+    },[trackPosition,trackDuration,replay])
     
     const VolumeLevel = () => {
         if (volume === 0) {
@@ -85,6 +70,12 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
             setVolume(nowPlaying.volumePercent);
         }
     }, [nowPlaying.volumePercent]);
+
+    useEffect(() => {
+        if(!isDragging) {
+            setDragValue(trackPosition);
+        }
+    },[trackPosition, isDragging])
     return (
         <div className="items-center justify-between flex relative w-full h-[78px]">
             <div className="flex flex-row items-center justify-start flex-1 ml-2 w-[30%] min-w-[240px] h-full">
@@ -119,12 +110,19 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
                                 </div>
                             }
                         </button>
-                        <button className="customButton" onClick={() => {onSkipPrevious(); setCurrentTime(0);}}>
+                        <button className="customButton" onClick={() => {
+                            if(trackPosition > 2) {
+                                setTrackPosition(0);
+                                handleSeek(0);
+                            } else {
+                                onSkipPrevious();
+                            }
+                        }}>
                             <IoIosSkipBackward className="text-2xl"/>
                         </button>
                         <button className="text-black bg-white rounded-full p-1.5 flex-shrink-0 customButton" onClick={() => {
-                            if(currentTime === duration){
-                                setCurrentTime(0);
+                            if(trackPosition === trackDuration){
+                                setTrackPosition(0);
                             }
                             onPlayPause();
                         }}>
@@ -135,7 +133,7 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
                                 )
                             }
                         </button>
-                        <button className="customButton" onClick={() => {onSkipNext(); setCurrentTime(duration);}}>
+                        <button className="customButton" onClick={() => {onSkipNext(); setTrackPosition(trackDuration);}}>
                             <IoIosSkipForward className="text-2xl"/>
                         </button>
                         <button className="flex customButton justify-center items-center" onClick={() => {onRepeat(); setReplay(!replay);}}>
@@ -148,27 +146,25 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
                     </div>
                     <div className="flex flex-row items-center justify-center gap-2 w-full">
                         <span className="text-xs w-7 text-right">
-                            {formatTime(currentTime)}
+                            {formatTime(isDragging ? dragValue : trackPosition)}
                         </span>
                         
                         <div className="flex flex-1 max-w-[600px] h-1 mt-0.5 items-center rounded-full bg-customgray3 brightness-250 relative">
                             <input
                                 type="range"
                                 min="0"
-                                max={duration}
-                                value={currentTime}
+                                max={trackDuration}
+                                value={isDragging ? dragValue : trackPosition}
                                 onChange={handleTimeChange}
                                 onMouseDown={handleRangeMouseDown}
                                 onMouseUp={handleRangeMouseUp}
-                                onTouchStart={handleRangeMouseDown}
-                                onTouchEnd={handleRangeMouseUp}
                                 className="slider w-full h-[4px] bg-transparent cursor-pointer appearance-none rounded-full
                                     [&::-webkit-slider-track]:rounded-full [&::-webkit-slider-track]:h-[5px]
                                     [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:opacity-0 hover:[&::-webkit-slider-thumb]:opacity-100 [&::-webkit-slider-thumb]:transition-opacity
                                     [&::-moz-range-track]:rounded-full [&::-moz-range-track]:h-[5px] [&::-moz-range-track]:border-none
                                     [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-none [&::-moz-range-thumb]:opacity-0 hover:[&::-moz-range-thumb]:opacity-100"
                                 style={{
-                                    background: `linear-gradient(to right, ${isHovered ? '#22c55e' : 'white'} 0%, ${isHovered ? '#22c55e' : 'white'} ${(currentTime / duration) * 100}%, transparent ${(currentTime / duration) * 100}%, transparent 100%)`
+                                    background: `linear-gradient(to right, ${isHovered ? '#22c55e' : 'white'} 0%, ${isHovered ? '#22c55e' : 'white'} ${(dragValue / trackDuration) * 100}%, transparent ${(dragValue / trackDuration) * 100}%, transparent 100%)`
                                 }}
                                 onMouseEnter={() => setIsHovered(true)}
                                 onMouseLeave={() => setIsHovered(false)}
@@ -176,7 +172,7 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
                         </div>
                         
                         <span className="text-xs w-5 text-left">
-                            -{formatTime(duration - currentTime)}
+                            -{formatTime(trackDuration - (isDragging ? dragValue : trackPosition))}
                         </span>
                     </div>
                 </div>

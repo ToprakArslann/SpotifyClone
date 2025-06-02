@@ -21,6 +21,8 @@ export default function App() {
   const [spotifyToken, setSpotifyToken] = useState("");
   const [nowPlaying, setNowPlaying] = useState({});
   const [currentTrackId, setCurrentTrackId] = useState(null);
+  const [trackDuration, setTrackDuration] = useState(0);
+  const [trackPosition, setTrackPosition] = useState(0);
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -28,14 +30,14 @@ export default function App() {
     const spotifyToken = getTokenFromUrl().access_token;
     window.location.hash = "";
     console.log("spotify token", spotifyToken)
-    
-    if(spotifyToken) {
+
+    if (spotifyToken) {
       setSpotifyToken(spotifyToken);
       setLoggedIn(true);
-      spotifyApi.setAccessToken(spotifyToken); 
+      spotifyApi.setAccessToken(spotifyToken);
     }
-  },[])
-  
+  }, [])
+
   const getNowPlaying = () => {
     spotifyApi.getMyCurrentPlaybackState().then((response) => {
       console.log(response);
@@ -45,7 +47,9 @@ export default function App() {
         artists: response.item?.artists,
         volumePercent: response.device.volume_percent,
         isPlaying: response.is_playing
-      })
+      });
+      setTrackDuration(response.item?.duration_ms ? Math.floor(response.item.duration_ms / 1000) : 0);
+      setTrackPosition(response.progress_ms ? Math.floor(response.progress_ms / 1000) : 0);
     })
   }
 
@@ -65,7 +69,7 @@ export default function App() {
             });
           }
         });
-      }, 2000); 
+      }, 2000);
     }
     return () => {
       if (interval) clearInterval(interval);
@@ -74,13 +78,13 @@ export default function App() {
 
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((response) => {
-      if(response.is_playing){
+      if (response.is_playing) {
         spotifyApi.pause().then(() => {
-          setTimeout(getNowPlaying,100);
+          setTimeout(getNowPlaying, 100);
         });
       } else {
         spotifyApi.play().then(() => {
-          setTimeout(getNowPlaying,100);
+          setTimeout(getNowPlaying, 100);
         });
       }
     })
@@ -106,10 +110,28 @@ export default function App() {
     });
   }
 
+  const handleSeek = (position) => {
+    spotifyApi.seek(position * 1000).then(() => {
+      getNowPlaying();
+    });
+  };
+
+  useEffect(() => {
+    let interval;
+    if (loggedIn) {
+        interval = setInterval(() => {
+            spotifyApi.getMyCurrentPlaybackState().then((response) => {
+                setTrackPosition(response.progress_ms ? Math.floor(response.progress_ms / 1000) : 0);
+            });
+        }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [loggedIn, spotifyToken]);
+
   useEffect(() => {
     getNowPlaying();
-  },[])
-  
+  }, [])
+
   return (
     <>
       {!loggedIn &&
@@ -134,7 +156,7 @@ export default function App() {
             </div>
           </div>
           <div className="h-[78px] flex-shrink-0 ">
-            <Footer nowPlaying={nowPlaying} getNowPlaying={getNowPlaying} onPlayPause={handlePlayPause} onSkipNext={handleSkipNext} onSkipPrevious={handleSkipPrevious} onRepeat={handleRepeat} handleVolume={handleVolume}/>
+            <Footer nowPlaying={nowPlaying} getNowPlaying={getNowPlaying} onPlayPause={handlePlayPause} onSkipNext={handleSkipNext} onSkipPrevious={handleSkipPrevious} onRepeat={handleRepeat} handleVolume={handleVolume} trackDuration={trackDuration} trackPosition={trackPosition} setTrackPosition={setTrackPosition} handleSeek={handleSeek}/>
           </div>
         </div>
       }
