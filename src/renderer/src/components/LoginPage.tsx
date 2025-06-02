@@ -47,7 +47,7 @@ export default function LoginPage() {
                     </svg>
                     <p className="text-3xl font-bold">Millions of songs.</p>    
                     <p className="text-3xl font-bold">Free on Spotify.</p>    
-                    <button className="flex items-center justify-center w-35 h-13 bg-green-600 rounded-full mt-10 text-center text-black font-medium customButton">Log in <FaExternalLinkAlt className="text-xl ml-4"/></button>
+                    <a href="http://127.0.0.1:8888/" className="flex items-center justify-center w-35 h-13 bg-green-600 rounded-full mt-10 text-center text-black font-medium customButton">Log in <FaExternalLinkAlt className="text-xl ml-4"/></a>
                 </div>
             </div>
 

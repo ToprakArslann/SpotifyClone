@@ -1,24 +1,124 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import MainPage from "./components/MainPage";
 import SideMenu from "./components/SideMenu";
 import SongInfo from "./components/SongInfo";
 import LoginPage from "./components/LoginPage";
+import SpotifyWebApi from "spotify-web-api-js";
 
+const spotifyApi = new SpotifyWebApi();
+
+const getTokenFromUrl = () => {
+  return window.location.hash.substring(1).split("&").reduce((initial, item) => {
+    let parts = item.split("=");
+    initial[parts[0]] = decodeURIComponent(parts[1]);
+    return initial;
+  }, {});
+};
 
 export default function App() {
+  const [spotifyToken, setSpotifyToken] = useState("");
+  const [nowPlaying, setNowPlaying] = useState({});
+  const [currentTrackId, setCurrentTrackId] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(() => {
+    console.log("token from url", getTokenFromUrl());
+    const spotifyToken = getTokenFromUrl().access_token;
+    window.location.hash = "";
+    console.log("spotify token", spotifyToken)
+    
+    if(spotifyToken) {
+      setSpotifyToken(spotifyToken);
+      setLoggedIn(true);
+      spotifyApi.setAccessToken(spotifyToken); 
+    }
+  },[])
+  
+  const getNowPlaying = () => {
+    spotifyApi.getMyCurrentPlaybackState().then((response) => {
+      console.log(response);
+      setNowPlaying({
+        name: response.item?.name,
+        albumArt: response.item?.album.images[0].url,
+        artists: response.item?.artists,
+        volumePercent: response.device.volume_percent,
+        isPlaying: response.is_playing
+      })
+    })
+  }
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+    if (loggedIn) {
+      interval = setInterval(() => {
+        spotifyApi.getMyCurrentPlaybackState().then((response) => {
+          if (response?.item?.id !== currentTrackId) {
+            setCurrentTrackId(response?.item?.id);
+            setNowPlaying({
+              name: response.item?.name,
+              albumArt: response.item?.album.images[0].url,
+              artists: response.item?.artists,
+              volumePercent: response.device.volume_percent,
+              isPlaying: response.is_playing
+            });
+          }
+        });
+      }, 2000); 
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [loggedIn, currentTrackId, spotifyToken]);
+
+  const handlePlayPause = () => {
+    spotifyApi.getMyCurrentPlaybackState().then((response) => {
+      if(response.is_playing){
+        spotifyApi.pause().then(() => {
+          setTimeout(getNowPlaying,100);
+        });
+      } else {
+        spotifyApi.play().then(() => {
+          setTimeout(getNowPlaying,100);
+        });
+      }
+    })
+  }
+  const handleSkipNext = () => {
+    spotifyApi.skipToNext().then(() => {
+      setTimeout(getNowPlaying, 500); // 0.5 saniye sonra güncelle
+    });
+  };
+
+  const handleSkipPrevious = () => {
+    spotifyApi.skipToPrevious().then(() => {
+      setTimeout(getNowPlaying, 500);
+    });
+  };
+  const handleRepeat = () => {
+    spotifyApi.setRepeat("track");
+  }
+
+  const handleVolume = (volume) => {
+    spotifyApi.setVolume(volume).then(() => {
+      setTimeout(getNowPlaying, 100);
+    });
+  }
+
+  useEffect(() => {
+    getNowPlaying();
+  },[])
+  
   return (
     <>
       {!loggedIn &&
         <div className="w-screen h-screen flex ">
-          <LoginPage/>
+          <LoginPage />
         </div>
       }
-      {loggedIn && 
-        <div className="bg-black h-screen w-screen flex flex-col ">
+      {loggedIn &&
+        <div className="bg-black h-screen w-screen flex flex-col">
           <div className="h-14 flex-shrink-0">
             <Header />
           </div>
@@ -34,11 +134,11 @@ export default function App() {
             </div>
           </div>
           <div className="h-[78px] flex-shrink-0 ">
-            <Footer />
+            <Footer nowPlaying={nowPlaying} getNowPlaying={getNowPlaying} onPlayPause={handlePlayPause} onSkipNext={handleSkipNext} onSkipPrevious={handleSkipPrevious} onRepeat={handleRepeat} handleVolume={handleVolume}/>
           </div>
         </div>
       }
-      
-    </> 
+
+    </>
   )
 }

@@ -10,15 +10,14 @@ import { CgMiniPlayer } from "react-icons/cg";
 import songCover from "../assets/songCover.png";
 import { format } from "path";
 
-export default function Footer() {
-    const [play, setPlay] = useState(false);
+export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNext, onSkipPrevious, onRepeat, handleVolume}) {
     const [currentTime, setCurrentTime] = useState(17);
     const [duration,setDuration] = useState(333);
     const [isDragging, setIsDragging] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [replay, setReplay] = useState(false);
     const [shuffle, setShuffle] = useState(false);
-    const [volume,setVolume] = useState(100);
+    const [volume,setVolume] = useState(nowPlaying.volumePercent);
     const [tempVolume, setTempVolume] = useState(100);
     const [volumeHover, setVolumeHover] = useState(false);
     const [mini,setMini] = useState(false);
@@ -47,21 +46,18 @@ export default function Footer() {
 
     useEffect(() => {
         if(currentTime === duration && !replay){
-            setPlay(true);
         } else if (currentTime === duration && replay) {
             setCurrentTime(0);
-            setPlay(false);
 
         }
         
-    },[play,currentTime,duration,replay])
+    },[currentTime,duration,replay])
     useEffect(() => {
         let interval;
-        if (!play && !isDragging && currentTime < duration) {
+        if (!isDragging && currentTime < duration) {
             interval = setInterval(() => {
                 setCurrentTime(prev => {
                     if (prev >= duration) {
-                        setPlay(false);
                         return duration;
                     }
                     return prev + 1;
@@ -69,7 +65,7 @@ export default function Footer() {
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [play, currentTime, duration, isDragging]);
+    }, [currentTime, duration, isDragging]);
 
     
     const VolumeLevel = () => {
@@ -84,18 +80,27 @@ export default function Footer() {
         }
     }
 
+    useEffect(() => {
+        if (typeof nowPlaying.volumePercent === "number") {
+            setVolume(nowPlaying.volumePercent);
+        }
+    }, [nowPlaying.volumePercent]);
     return (
         <div className="items-center justify-between flex relative w-full h-[78px]">
             <div className="flex flex-row items-center justify-start flex-1 ml-2 w-[30%] min-w-[240px] h-full">
                 <div className="bg-customgray w-14 h-14 ml-2 rounded-md items-center justify-center overflow-hidden flex-shrink-0">
-                    <img src={songCover} alt="" className="w-full h-full object-cover"/>
+                    <img src={nowPlaying.albumArt} alt="" className="w-full h-full object-cover"/>
                 </div>
                 <div className="flex flex-row overflow-hidden whitespace-nowrap pl-4">
                     <div className="flex flex-col w-full justify-start">
-                        <a href="#" className="hover:underline font-medium">Iron - Gucci Vump Remix</a>
+                        <a href="#" className="hover:underline font-medium">{nowPlaying.name}</a>
                         <p className="font-light brightness-75 text-xs">
-                            <a href="#" className="hover:underline">Woodkid</a>,
-                            <a href="#" className="hover:underline">Gucci Vump</a>
+                            {nowPlaying.artists && Array.isArray(nowPlaying.artists) ? nowPlaying.artists.map((artist, i) => (
+                                <span key={artist.id || i}>
+                                    <a href="#" className="hover:underline">{artist.name}</a>
+                                    {i < nowPlaying.artists.length - 1 && ","}
+                                </span>
+                            )) : null}
                         </p>
                     </div>
                 </div>
@@ -107,33 +112,33 @@ export default function Footer() {
             <div className="flex items-center justify-center p-2 h-full w-[40%]">
                 <div className="flex flex-col items-center justify-center flex-1 min-w-0">
                     <div className="flex flex-row items-center justify-center gap-4 mb-1">
-                        <button className="flex customButton justify-center items-center" onClick={() => setShuffle(!shuffle)}>
+                        <button className="flex customButton justify-center items-center" onClick={() => {getNowPlaying(); setShuffle(!shuffle)}}>
                             <IoIosShuffle className={`text-3xl ${shuffle ? "text-green-700" : ""}`}/>
                             {shuffle && 
                                 <div className="absolute bg-green-700 w-1 h-1 mt-7 rounded-full">
                                 </div>
                             }
                         </button>
-                        <button className="customButton" onClick={() => {setCurrentTime(0); setPlay(false);}}>
+                        <button className="customButton" onClick={() => {onSkipPrevious(); setCurrentTime(0);}}>
                             <IoIosSkipBackward className="text-2xl"/>
                         </button>
-                        <button className="text-black bg-white  rounded-full p-1.5 flex-shrink-0 customButton" onClick={() => {
+                        <button className="text-black bg-white rounded-full p-1.5 flex-shrink-0 customButton" onClick={() => {
                             if(currentTime === duration){
                                 setCurrentTime(0);
                             }
-                            setPlay(!play)
+                            onPlayPause();
                         }}>
-                            {play ? (
-                                    <IoIosPlay className="text-2xl"/>
-                                ) : (
-                                    <IoIosPause className="text-2xl"/>
+                            {nowPlaying.isPlaying ? (
+                                <IoIosPause className="text-2xl"/>
+                            ) : (
+                                <IoIosPlay className="text-2xl"/>
                                 )
                             }
                         </button>
-                        <button className="customButton" onClick={() => {setCurrentTime(duration); setPlay(true); setReplay(false);}}>
+                        <button className="customButton" onClick={() => {onSkipNext(); setCurrentTime(duration);}}>
                             <IoIosSkipForward className="text-2xl"/>
                         </button>
-                        <button className="flex customButton justify-center items-center" onClick={() => setReplay(!replay)}>
+                        <button className="flex customButton justify-center items-center" onClick={() => {onRepeat(); setReplay(!replay);}}>
                             <SlLoop className={`text-xl rounded-md ${replay ? "text-green-700" : ""}`}/>
                             {replay && 
                                 <div className="absolute bg-green-700 w-1 h-1 mt-7 rounded-full">
@@ -215,8 +220,10 @@ export default function Footer() {
                         if(volume !== 0) {
                             setTempVolume(volume);
                             setVolume(0);
+                            handleVolume(0);
                         } else {
                             setVolume(tempVolume);
+                            handleVolume(tempVolume);
                         }
 
                     }}>
@@ -228,6 +235,7 @@ export default function Footer() {
                         max={100}
                         min={0}
                         onChange={(e) => setVolume(Number(e.target.value))}
+                        onMouseUp={() => handleVolume(volume)}
                         className="slider w-full max-w-[90px] h-[4px] bg-transparent cursor-pointer appearance-none rounded-full
                             [&::-webkit-slider-track]:rounded-full [&::-webkit-slider-track]:h-[5px]
                             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:opacity-0 hover:[&::-webkit-slider-thumb]:opacity-100 [&::-webkit-slider-thumb]:transition-opacity
