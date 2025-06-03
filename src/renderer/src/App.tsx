@@ -20,6 +20,10 @@ const getTokenFromUrl = () => {
 export default function App() {
   const [spotifyToken, setSpotifyToken] = useState("");
   const [nowPlaying, setNowPlaying] = useState({});
+  const [userPlaylists, setUserPlaylists] = useState({});
+  const [followedArtists, setFollowedArtists] = useState({});
+  const [userShows, setUserShows] = useState({});
+  const [likedTracks, setLikedTracks] = useState({});
   const [currentTrackId, setCurrentTrackId] = useState(null);
   const [trackDuration, setTrackDuration] = useState(0);
   const [trackPosition, setTrackPosition] = useState(0);
@@ -75,6 +79,25 @@ export default function App() {
       if (interval) clearInterval(interval);
     };
   }, [loggedIn, currentTrackId, spotifyToken]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      spotifyApi.getFollowedArtists().then((data) => {
+        setFollowedArtists(data.artists.items);
+      })
+      spotifyApi.getUserPlaylists().then((data) => {
+        console.log(data);
+        setUserPlaylists(data.items);
+      })
+      spotifyApi.getMySavedShows().then((data) => {
+        setUserShows(data.items.map(item => item.show));
+        console.log(userShows);
+      })
+      spotifyApi.getMySavedTracks().then((data) => {
+        setLikedTracks(data.items);
+      })
+    }
+  }, [loggedIn]);
 
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((response) => {
@@ -146,7 +169,7 @@ export default function App() {
           </div>
           <div className="flex-1 flex m-2 gap-2 min-h-0">
             <div className="flex-shrink-0 bg-amber-200">
-              <SideMenu />
+              <SideMenu userPlaylists={userPlaylists} followedArtists={followedArtists} userShows={userShows} likedTracks={likedTracks}/>
             </div>
             <div className="flex-1 flex min-h-0 bg-amber-300">
               <MainPage />

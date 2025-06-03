@@ -79,7 +79,7 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
     return (
         <div className="items-center justify-between flex relative w-full h-[78px]">
             <div className="flex flex-row items-center justify-start flex-1 ml-2 w-[30%] min-w-[240px] h-full">
-                <div className="bg-customgray w-14 h-14 ml-2 rounded-md items-center justify-center overflow-hidden flex-shrink-0">
+                <div className={`bg-customgray w-14 h-14 ml-2 rounded-md items-center justify-center overflow-hidden flex-shrink-0 ${nowPlaying.albumArt ? "visible" : "hidden"}`}>
                     <img src={nowPlaying.albumArt} alt="" className="w-full h-full object-cover"/>
                 </div>
                 <div className="flex flex-row overflow-hidden whitespace-nowrap pl-4">
@@ -95,7 +95,7 @@ export default function Footer({nowPlaying, getNowPlaying, onPlayPause, onSkipNe
                         </p>
                     </div>
                 </div>
-                <div className="flex flex-row items-center gap-3 scale-80  h-full ml-2">
+                <div className={`flex flex-row items-center gap-3 scale-80  h-full ml-2 ${nowPlaying.name ? "visible" : "hidden"}`}>
                     <MinusCircle className="customButton"/>
                     <PlusCircle className="customButton"/>
                 </div>
