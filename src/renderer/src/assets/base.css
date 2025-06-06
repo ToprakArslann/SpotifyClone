@@ -1,11 +1,15 @@
 @import "tailwindcss";
 @plugin "tailwind-scrollbar";
+* {
+  outline: none;
+}
 
 body {
   color: white;
   overflow: overlay;
   flex-shrink: none;
   user-select: none;
+  outline: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

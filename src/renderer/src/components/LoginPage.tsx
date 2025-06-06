@@ -26,7 +26,7 @@ export default function LoginPage() {
         }
     };
     return(
-        <div className="flex items-center flex-col justify-center w-full h-full bg-gradient-to-t from-black to-customgray/90">
+        <div className="flex items-center flex-col justify-center w-full h-full bg-gradient-to-t from-black to-customgray3 rounded-md">
             <div className="flex absolute top-0 w-full h-16 drag-region ">
                 <div className="flex absolute right-0 top-2 flex-row" >
                     <button onClick={handleMinimize} className="hover:bg-white/20 bg-customgray2/70 w-10 h-8 flex items-center justify-center">

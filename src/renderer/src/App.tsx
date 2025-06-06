@@ -62,7 +62,6 @@ export default function App() {
     if (loggedIn) {
       interval = setInterval(() => {
         spotifyApi.getMyCurrentPlaybackState().then((response) => {
-          if (response?.item?.id !== currentTrackId) {
             setCurrentTrackId(response?.item?.id);
             setNowPlaying({
               name: response.item?.name,
@@ -71,7 +70,9 @@ export default function App() {
               volumePercent: response.device.volume_percent,
               isPlaying: response.is_playing
             });
-          }
+            if (response?.item?.id !== currentTrackId) {
+              setCurrentTrackId(response?.item?.id);
+            }
         });
       }, 2000);
     }
@@ -152,29 +153,29 @@ export default function App() {
   }, [loggedIn, spotifyToken]);
 
   useEffect(() => {
-    getNowPlaying();
+    setInterval(() => {
+      getNowPlaying();
+    }, 100);
   }, [])
 
   return (
     <>
       {!loggedIn &&
-        <div className="w-screen h-screen flex ">
+        <div className="flex w-screen h-screen rounded-md">
           <LoginPage />
         </div>
       }
       {loggedIn &&
-        <div className="bg-black h-screen w-screen flex flex-col">
+        <div className="bg-black h-screen w-screen flex flex-col rounded-md">
           <div className="h-14 flex-shrink-0">
             <Header />
           </div>
-          <div className="flex-1 flex m-2 gap-2 min-h-0">
-            <div className="flex-shrink-0 bg-amber-200">
-              <SideMenu userPlaylists={userPlaylists} followedArtists={followedArtists} userShows={userShows} likedTracks={likedTracks}/>
-            </div>
-            <div className="flex-1 flex min-h-0 bg-amber-300">
+          <div className="flex flex-1 flex-row justify-between m-2 gap-2 min-h-0">
+            <SideMenu userPlaylists={userPlaylists} followedArtists={followedArtists} userShows={userShows} likedTracks={likedTracks}/>
+            <div className="flex items-center justify-center w-full rounded-md overflow-hidden">
               <MainPage />
             </div>
-            <div className="flex-1 flex min-h-0 bg-amber-700">
+            <div className="flex items-center justify-center w-[40%] min-w-70 max-w-90 rounded-md bg-amber-300 overflow-hidden">
               <SongInfo />
             </div>
           </div>
