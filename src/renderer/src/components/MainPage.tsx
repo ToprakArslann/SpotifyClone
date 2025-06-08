@@ -176,24 +176,24 @@ export default function MainPage() {
                 <div className="w-full mb-8 pr-10">
                     <div className="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-4 gap-2">
                         {[...Array(8)].map((_,i) => (
-                            <div key={i} className="flex h-14 items-center bg-white/10 hover:bg-white/20 rounded-md overflow-hidden cursor-pointer transition-all duration-200 group">
-                                <div className="w-14 h-14 bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <div key={i} className="flex h-14 @7xl:h-16 @min-[120rem]:h-20 items-center bg-white/10 hover:bg-white/20 rounded-md overflow-hidden cursor-pointer transition-all duration-200 group">
+                                <div className="w-14 h-14 @7xl:w-16 @7xl:h-16 @min-[120rem]:w-20 @min-[120rem]:h-20 bg-gray-600 flex-shrink-0 overflow-hidden">
                                     <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                                        <span className="text-white text-xs font-bold">
+                                        <span className="text-white text-xs @7xl:text-sm @min-[120rem]:text-base font-bold">
                                             demo
                                         </span>
                                     </div>
                                 </div>
                                 
-                                <div className="flex-1 px-4 min-w-0">
-                                    <p className="text-white font-semibold text-sm truncate">
+                                <div className="flex-1 px-4 @7xl:px-5 @min-[120rem]:px-6 min-w-0">
+                                    <p className="text-white font-semibold text-sm @7xl:text-base @min-[120rem]:text-lg truncate">
                                         demotext1123123
                                     </p>
                                 </div>
                                 
-                                <div className="mr-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center hover:scale-105 transition-transform">
-                                        <CgPlayButton className="text-3xl text-black"/>
+                                <div className="mr-4 @7xl:mr-5 @min-[120rem]:mr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <div className="w-8 h-8 @7xl:w-10 @7xl:h-10 @min-[120rem]:w-12 @min-[120rem]:h-12 bg-green-500 rounded-full flex items-center justify-center hover:scale-105 transition-transform">
+                                        <CgPlayButton className="text-3xl @7xl:text-5xl @min-[120rem]:text-7xl text-black"/>
                                     </div>
                                 </div>
                             </div>
