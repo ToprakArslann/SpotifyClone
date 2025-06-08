@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function SideMenu({userPlaylists, followedArtists, userShows, likedTracks}) {
     const [extendMenu, setExtendMenu] = useState(false);
     return (
-        <div className={`flex flex-col h-full transition-all duration-100 ${extendMenu ? "w-[50%] min-w-60 max-w-80" : "w-[80px] min-w-[80px] max-w-[80px]"} rounded-md bg-customgray2 pt-4 pr-1 pl-1`}>
+        <div className={`flex flex-col h-full transition-all duration-100 ${extendMenu ? "w-[50%] min-w-60 max-w-80" : "w-[82px] min-w-[82px] max-w-[82px]"} rounded-md bg-customgray2 pt-4 pr-1 pl-1`}>
             <div className="flex flex-col justify-start flex-shrink-0 pb-2 pt-2 ml-5">
                 <button className="flex items-center justify-center w-9 h-9 customButton" onClick={() => setExtendMenu(!extendMenu)}>
                     <LuLibrary className="text-2xl"/>

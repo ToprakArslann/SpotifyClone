@@ -176,8 +176,8 @@ export default function MainPage() {
                 <div className="w-full mb-8 pr-10">
                     <div className="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-4 gap-2">
                         {[...Array(8)].map((_,i) => (
-                            <div key={i} className="flex h-14 @7xl:h-16 @min-[120rem]:h-20 items-center bg-white/10 hover:bg-white/20 rounded-md overflow-hidden cursor-pointer transition-all duration-200 group">
-                                <div className="w-14 h-14 @7xl:w-16 @7xl:h-16 @min-[120rem]:w-20 @min-[120rem]:h-20 bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <div key={i} className="flex h-14 @7xl:h-16 @min-[120rem]:h-20 items-center bg-white/10 hover:bg-white/20 rounded-md overflow-hidden cursor-pointer transition-all duration-200 ">
+                                <div className="w-14 h-14 @7xl:w-16 @7xl:h-16 @min-[120rem]:w-20 @min-[120rem]:h-20 bg-gray-600 flex-shrink-0 overflow-hidden drop-shadow-[10px_0px_8px_rgba(0,0,0,0.25)]">
                                     <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                                         <span className="text-white text-xs @7xl:text-sm @min-[120rem]:text-base font-bold">
                                             demo
