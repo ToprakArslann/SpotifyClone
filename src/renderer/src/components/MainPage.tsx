@@ -167,12 +167,12 @@ export default function MainPage() {
 
     return (
         <div className={`@container flex flex-col w-full h-full items-center bg-gradient-to-t from-customgray ${randomColor} from-65% bg-fixed`}>
-            <header className="w-full h-15 z-10 sticky top-0 flex flex-row items-center justify-start pt-5 pb-5 pl-10 gap-2 transition-all duration-300">
+            <header className="w-full h-15 z-10 sticky top-0 flex flex-row items-center justify-start pt-5 pb-5 pl-10 gap-2 transition-all duration-300 max-w-500">
                 <button className={`flex items-center justify-center pt-1 pb-1 pr-2 pl-2 rounded-full ${active === "all" ? "bg-white text-black" :  "bg-white/10 hover:bg-white/20 active:bg-white/50"}`} onClick={() => {setActive("all")}}>All</button>
                 <button className={`flex items-center justify-center pt-1 pb-1 pr-2 pl-2 rounded-full ${active === "music" ? "bg-white text-black" :  "bg-white/10 hover:bg-white/20 active:bg-white/50"}`} onClick={() => {setActive("music")}}>Music</button>
                 <button className={`flex items-center justify-center pt-1 pb-1 pr-2 pl-2 rounded-full ${active === "podcasts" ? "bg-white text-black" :  "bg-white/10 hover:bg-white/20 active:bg-white/50"}`} onClick={() => {setActive("podcasts")}}>Podcasts</button>
             </header>
-            <SimpleBar className="flex-1 w-full h-full pl-10 overflow-y-auto overflow-x-hidden">
+            <SimpleBar className="flex-1 w-full h-full pl-10 overflow-y-auto overflow-x-hidden max-w-500">
                 <div className="w-full mb-8 pr-10">
                     <div className="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-4 gap-2">
                         {[...Array(8)].map((_,i) => (
