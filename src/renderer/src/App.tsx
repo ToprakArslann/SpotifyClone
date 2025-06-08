@@ -27,7 +27,7 @@ export default function App() {
   const [currentTrackId, setCurrentTrackId] = useState(null);
   const [trackDuration, setTrackDuration] = useState(0);
   const [trackPosition, setTrackPosition] = useState(0);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
 
   useEffect(() => {
     console.log("token from url", getTokenFromUrl());

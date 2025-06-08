@@ -68,7 +68,7 @@ function ScrollableContainer({ children, title, subtitle, showAllLink }: {
             
             <div className="relative group">
                 <button 
-                    className={`absolute left-5 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-black/70 rounded-full flex items-center justify-center transition-opacity duration-200 ${
+                    className={`absolute left-5 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-black/70 rounded-full flex items-center justify-center transition-opacity duration-200 ${
                         canScrollLeft ? 'opacity-0 group-hover:opacity-100' : 'opacity-0 pointer-events-none'
                     }`}
                     onClick={scrollLeft}
@@ -77,7 +77,7 @@ function ScrollableContainer({ children, title, subtitle, showAllLink }: {
                 </button>
                 
                 <button 
-                    className={`absolute right-5 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-black/70 rounded-full flex items-center justify-center transition-opacity duration-200 ${
+                    className={`absolute right-5 top-1/2 transform -translate-y-1/2 z-20 w-10 h-10 bg-black/70 rounded-full flex items-center justify-center transition-opacity duration-200 ${
                         canScrollRight ? 'opacity-0 group-hover:opacity-100' : 'opacity-0 pointer-events-none'
                     }`}
                     onClick={scrollRight}
@@ -99,7 +99,7 @@ function ScrollableContainer({ children, title, subtitle, showAllLink }: {
 
 function PlaylistItem({ index }: { index: number }) {
     return (
-        <div className="flex flex-col w-45 h-full p-3 gap-3 hover:bg-white/10 rounded-md items-start flex-shrink-0 transition-all duration-200 cursor-pointer group/item">
+        <div className="flex flex-col w-45 h-60 p-3 gap-3 hover:bg-white/10 rounded-md items-start flex-shrink-0 transition-all duration-200 cursor-pointer group/item">
             <div className="relative w-full aspect-square bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-md overflow-hidden shadow-lg">
                 <div className="w-full h-full flex items-center justify-center">
                     <span className="text-white font-bold text-lg">
@@ -127,7 +127,7 @@ function PlaylistItem({ index }: { index: number }) {
 }
 function ArtistItem({ index }: { index: number }) {
     return (
-        <div className="flex flex-col w-45 h-full p-3 gap-3 hover:bg-white/10 rounded-md items-start flex-shrink-0 transition-all duration-200 cursor-pointer group/item">
+        <div className="flex flex-col w-45 h-60 p-3 gap-3 hover:bg-white/10 rounded-md items-start flex-shrink-0 transition-all duration-200 cursor-pointer group/item">
             <div className="relative w-full aspect-square rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 shadow-lg">
                 <div className="w-full h-full flex items-center justify-center overflow-hidden">
                     <span className="text-white font-bold text-lg">
@@ -144,11 +144,8 @@ function ArtistItem({ index }: { index: number }) {
             
             <div className="w-full">
                 <h3 className="font-semibold text-white text-sm mb-1 truncate">
-                    Playlist Name {index + 1}
+                    Artist Name {index + 1}
                 </h3>
-                <p className="text-gray-400 text-xs truncate">
-                    Artist Name, Another Artist, Another Artist
-                </p>
             </div>
         </div>
     );
@@ -177,7 +174,7 @@ export default function MainPage() {
             </header>
             <SimpleBar className="flex-1 w-full h-full pl-10 overflow-y-auto overflow-x-hidden">
                 <div className="w-full mb-8 pr-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-4 gap-2">
                         {[...Array(8)].map((_,i) => (
                             <div key={i} className="flex h-14 items-center bg-white/10 hover:bg-white/20 rounded-md overflow-hidden cursor-pointer transition-all duration-200 group">
                                 <div className="w-14 h-14 bg-gray-600 flex-shrink-0 overflow-hidden">
@@ -233,7 +230,7 @@ export default function MainPage() {
                         <PlaylistItem key={i} index={i} />
                     ))}
                 </ScrollableContainer>
-                <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 @min-[100rem]:grid-cols-4 gap-4 pr-10">
+                <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 @min-[100rem]:grid-cols-4 gap-4 pr-10 pb-10">
                 {[...Array(8)].map((_, i) => (
                     <div 
                     key={i}
